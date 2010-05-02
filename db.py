@@ -35,6 +35,41 @@ class database:
   def setOutboxProcessed(self, msg_id, status):
     sql = "UPDATE outbox SET processed = %s where id = %s"
     self.__cursor.execute(sql % (status, msg_id))
+  def pushNewUser(self, mobno, password):
+    sql = "INSERT INTO users VALUES( \"%s\",\"%s\")" % (mobno, password)
+    print sql
+    self.__cursor.execute(sql)
+  def setNewPassword(self, mobno, password):
+    sql = "UPDATE users SET password = \"%s\" where mobileno = \"%s\""
+    self.__cursor.execute(sql % (password, mobno))
+  def isUserExists(self, mobno):
+    sql = "SELECT * FROM users WHERE mobileno=\"%s\"" % mobno
+    self.__cursor.execute(sql)
+    rows = self.__cursor.fetchall()
+    if len(rows)==0:
+      return True
+    else:
+      return False
+  def pushNewService(self, mobno, service, uid, password):
+    sql = "SELECT * FROM accounts WHERE mobileno=\"%s\" and service=\"%s\"" % (mobno,service)
+    self.__cursor.execute(sql)
+    rows = self.__cursor.fetchall()
+    if len(rows)==0:
+      sql = "INSERT INTO accounts VALUES( \"%s\",\"%s\", \"%s\", \"%s\")" % (mobno, service, uid, password)
+      print sql
+      self.__cursor.execute(sql)
+    else:
+      sql = "UPDATE accounts SET password = \"%s\", username=\"%s\" where mobileno = \"%s\" and service=\"%s\""
+      print sql
+      self.__cursor.execute(sql % (password, uid, mobno, service))
+  def getAccount(self,mobno,service)
+    sql = "SELECT username,password FROM accounts WHERE mobileno=\"%s\" and service=\"%s\"" % (mobno,service)
+    self.__cursor.execute(sql)
+    rows = self.__cursor.fetchall()
+    if len(rows)==0:
+      return None
+    else:
+      return rows
 
 def Hash(key):
    BitsInUnsignedInt = 1 * 8

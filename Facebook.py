@@ -57,7 +57,7 @@ class Facebook(threading.Thread):
     self.client.connect(server=('chat.facebook.com', 5222))
     print "Connected!"
     print "Authenticating..."
-    if self.client.auth(user, password, resource='Vishal_Personal_Bot', ) is None:
+    if self.client.auth(user, password, resource='CyberArchitect', ) is None:
       print "Login failed"
       return False
     print "Authenticated!"

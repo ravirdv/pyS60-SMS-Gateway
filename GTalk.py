@@ -31,8 +31,9 @@ class GTalk(threading.Thread):
 			#  print "Nick : " + presence_node.getNick()
 
   def __iqHandler(self,conn,iq_node):
-	  reply=iq_node.buildReply('result')
-	  conn.send(reply)
+	  pass
+	  #reply=iq_node.buildReply('result')
+	  #conn.send(reply)
 	  #raise NodeProcessed
 
   def __messageHandler(self,conn,mess_node):
@@ -52,7 +53,7 @@ class GTalk(threading.Thread):
     self.client.connect(server=('talk.google.com', 5223))
     print "Connected!"
     print "Authenticating..."
-    if self.client.auth(user, password, resource='Vishal_Personal_Bot', ) is None:
+    if self.client.auth(user, password, resource='CyberArchitect', ) is None:
       print "Login failed"
       return False
     print "Authenticated!"
