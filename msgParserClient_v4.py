@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import inbox, e32, lightblue, threading, messaging, time, sys, appuifw
+import inbox, e32, lightblue, threading, messaging, time, sys
 from xml.dom import minidom, Node
 class SMS:
   def __init__(self, str, to=None, frm=None, txt=None, ts=None):
@@ -64,6 +64,7 @@ class SenderThread (threading.Thread):
     while 1:
       print "Waiting for message from computer"
       self.response = self.rcvSkt.recv(1024)
+      print self.response
       sms=SMS(self.response)
       print sms.to + sms.text
       messaging.sms_send(sms.to, sms.text, "7bit", self.cb)
@@ -90,7 +91,7 @@ class ReceiverThread(threading.Thread):
     self.sndSkt.close()
 
 device = lightblue.selectdevice()
-print device[0]
+print "Connecting to Device" + device[1]
 ReceiverThread().start()
 SenderThread().start()
 print "Waiting for new SMS messages.."
