@@ -7,6 +7,39 @@ from Facebook import Facebook
 db=database()
 gt={}
 fb={}
+loggedin={}
+def Glogin(mobno,user,password):
+  if mobno in loggedin and loggedin[mobno]:
+    gt[mobno]=GTalk(mobno)
+    if not gt[mobno].connect(user, password):
+      db.pushOutboxMsg(mobno, "Invalid GTalk user or password! Access Denied!")
+    else:
+      gt[mobno].start()
+      time.sleep(5)
+      users=gt[mobno].getOnlineUsers()
+      response=""
+      for item in users:
+	response+="G%s/%s\f\r" % (item, users[item])
+      db.pushOutboxMsg(mobno, response)
+  else:
+    db.pushOutboxMsg(mobno, "Please login... Reply with LOGIN password to login.")
+
+def Flogin(mobno,user,password):
+  if mobno in loggedin and loggedin[mobno]:
+    fb[mobno]=Facebook(mobno)
+    if not fb[mobno].connect(user, password):
+      db.pushOutboxMsg(mobno, "Invalid facebook user or password! Access Denied!")
+    else:
+      fb[mobno].start()
+      time.sleep(5)
+      users=fb[mobno].getOnlineUsers()
+      response=""
+      for item in users:
+	response+="F%s/%s\n" % (item, users[item])
+      db.pushOutboxMsg(mobno, response)
+  else:
+    db.pushOutboxMsg(mobno, "Please login... Reply with LOGIN password to login.")
+
 while 1:
   time.sleep(3)
   rows = db.popInboxMsg()
@@ -15,27 +48,48 @@ while 1:
     print "Msg : -> %s %s %s %s %s %s" % (row[0], row[1], row[2], row[3], row[4], row[5])
     r=SMSParser.parseSMS(row[3])
     if not r[0]:
-      db.pushOutboxMsg(row[2], "Invalid keyword")
+      db.pushOutboxMsg(row[2], "Invalid keyword!")
     else:
       if r[1]=="register":
-	if not db.isUserExists(row[2],r[2]):
+	if not db.isUserExists(row[2]):
 	  db.pushNewUser(row[2],r[2])
+	  db.pushOutboxMsg(row[2], "Registered! Send LOGIN password as reply to login.")
 	else:
 	  db.pushOutboxMsg(row[2], "User already exists!")
-      elif r[1]=="login":
-	pass
-      elif r[1]=="glogin":
-	gt[row[2]]=GTalk(row[2])
-	if not gt[row[2]].connect(r[2], r[3]):
-	  db.pushOutboxMsg(row[2], "Invalid GTalk user or password! Access Denied!")
+      elif r[1]=="pw":
+	if row[2] in loggedin and loggedin[row[2]]:
+	  if db.setNewPassword(row[2],r[2]):
+	    db.pushOutboxMsg(row[2], "Password Changed!")
 	else:
-	  gt[row[2]].start()
-	  time.sleep(5)
-	  users=gt[row[2]].getOnlineUsers()
-	  response=""
-	  for item in users:
-	    response+="G%s/%s\n" % (item, users[item])
+	  db.pushOutboxMsg(row[2], "Please login... Reply with LOGIN password to login.")
+      elif r[1]=="login":
+	if db.isUserCorrect(row[2],r[2]):
+	  response="Login success! "
+	  loggedin[row[2]]=True
+	  gl=db.getAccount(row[2],"google")
+	  if gl!=None:
+	    Glogin(row[2],gl[0],gl[1])
+	    response+="Logging you in GTALK... "
+	  fl=db.getAccount(row[2],"facebook")
+	  if fl!=None:
+	    Flogin(row[2],fl[0],fl[1])
+	    response+="Logging you in facebook... "
 	  db.pushOutboxMsg(row[2], response)
+	else:
+	  db.pushOutboxMsg(row[2], "Invalid Password or not a registered!")
+      elif r[1]=="logout":
+	if row[2] in gt:
+	  gt[row[2]].disconnect()
+	  del gt[row[2]]
+	if row[2] in fb:
+	  fb[row[2]].disconnect()
+	  del fb[row[2]]
+	if row[2] in loggedin:
+	  loggedin[row[2]]=False
+	  del loggedin[row[2]]
+      elif r[1]=="glogin":
+	Glogin(row[2],r[2],r[3])
+	db.pushNewService(row[2],"google",r[2], r[3])
       elif r[1]=="glist":
 	if row[2] in gt:
 	  users=gt[row[2]].getOnlineUsers()
@@ -56,17 +110,8 @@ while 1:
 	else:
 	   db.pushOutboxMsg(row[2], "Please login first...")
       elif r[1]=="flogin":
-	fb[row[2]]=Facebook(row[2])
-	if not fb[row[2]].connect(r[2], r[3]):
-	  db.pushOutboxMsg(row[2], "Invalid FB user or password! Access Denied!")
-	else:
-	  fb[row[2]].start()
-	  time.sleep(5)
-	  users=fb[row[2]].getOnlineUsers()
-	  response=""
-	  for item in users:
-	    response+="F%s/%s\n" % (item, users[item])
-	  db.pushOutboxMsg(row[2], response)
+	Flogin(row[2],r[2],r[3])
+	db.pushNewService(row[2],"facebook",r[2], r[3])
       elif r[1]=="flist":
 	if row[2] in fb:
 	  users=fb[row[2]].getOnlineUsers()

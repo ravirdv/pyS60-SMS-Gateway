@@ -7,7 +7,7 @@ class SMSParser:
     msg=msg.strip()
     s=msg.split(" ",1)
     if len(s)==1:
-      if s[0].lower()=="glist" or s[0].lower()=="flogout" or s[0].lower()=="flist" or s[0].lower()=="flogout":
+      if s[0].lower()=="glist" or s[0].lower()=="glogout" or s[0].lower()=="flist" or s[0].lower()=="flogout" or s[0].lower()=="logout":
 	r[1]=s[0].lower()
 	r[0]=True
     elif len(s)!=2:
