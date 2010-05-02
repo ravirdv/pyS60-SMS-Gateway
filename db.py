@@ -42,8 +42,20 @@ class database:
   def setNewPassword(self, mobno, password):
     sql = "UPDATE users SET password = \"%s\" where mobileno = \"%s\""
     self.__cursor.execute(sql % (password, mobno))
+    if self.__cursor.rowcount==1:
+      return True
+    else:
+      return False
   def isUserExists(self, mobno):
     sql = "SELECT * FROM users WHERE mobileno=\"%s\"" % mobno
+    self.__cursor.execute(sql)
+    rows = self.__cursor.fetchall()
+    if len(rows)==0:
+      return False
+    else:
+      return True
+  def isUserCorrect(self, mobno,passwd):
+    sql = "SELECT * FROM users WHERE mobileno=\"%s\" and password=\"%s\"" % (mobno,passwd)
     self.__cursor.execute(sql)
     rows = self.__cursor.fetchall()
     if len(rows)==0:
@@ -69,7 +81,7 @@ class database:
     if len(rows)==0:
       return None
     else:
-      return rows
+      return rows[0]
 
 def Hash(key):
    BitsInUnsignedInt = 1 * 8
