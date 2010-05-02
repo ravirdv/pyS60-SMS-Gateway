@@ -18,7 +18,10 @@ while 1:
       db.pushOutboxMsg(row[2], "Invalid keyword")
     else:
       if r[1]=="register":
-	pass
+	if not db.isUserExists(row[2],r[2]):
+	  db.pushNewUser(row[2],r[2])
+	else:
+	  db.pushOutboxMsg(row[2], "User already exists!")
       elif r[1]=="login":
 	pass
       elif r[1]=="glogin":

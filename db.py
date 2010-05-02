@@ -47,9 +47,9 @@ class database:
     self.__cursor.execute(sql)
     rows = self.__cursor.fetchall()
     if len(rows)==0:
-      return True
-    else:
       return False
+    else:
+      return True
   def pushNewService(self, mobno, service, uid, password):
     sql = "SELECT * FROM accounts WHERE mobileno=\"%s\" and service=\"%s\"" % (mobno,service)
     self.__cursor.execute(sql)
@@ -62,7 +62,7 @@ class database:
       sql = "UPDATE accounts SET password = \"%s\", username=\"%s\" where mobileno = \"%s\" and service=\"%s\""
       print sql
       self.__cursor.execute(sql % (password, uid, mobno, service))
-  def getAccount(self,mobno,service)
+  def getAccount(self,mobno,service):
     sql = "SELECT username,password FROM accounts WHERE mobileno=\"%s\" and service=\"%s\"" % (mobno,service)
     self.__cursor.execute(sql)
     rows = self.__cursor.fetchall()

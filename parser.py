@@ -13,8 +13,11 @@ class SMSParser:
     elif len(s)!=2:
       r[0]=False
     else:
-      
-      if s[0].lower()=="register" or s[0].lower()=="login" or s[0].lower()=="glogin" or s[0].lower()=="flogin":
+      if s[0].lower()=="register" or s[0].lower()=="login" or s[0].lower()=="pw":
+	r[0]=True
+	r[1]=s[0].lower()
+	r[2]=s[1]
+      elif s[0].lower()=="glogin" or s[0].lower()=="flogin":
 	r[1]=s[0].lower()
 	y=s[1].split(" ",1)
 	if len(y)!=2:
