@@ -23,6 +23,7 @@ class SenderThread (threading.Thread):
 	print "Sending Msg -> %s" % (row[0])
 	sms=SMS(str(row[0]), row[1],row[2], row[3], str(row[4]))
         toSend = sms.toXML()
+	print toSend
         conn2.send(toSend)
         res = conn2.recv(1024)
         print res

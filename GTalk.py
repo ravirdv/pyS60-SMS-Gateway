@@ -50,7 +50,10 @@ class GTalk(threading.Thread):
   def connect(self, user, password):
     self.client = xmpp.Client('gmail.com')
     print "Connecting..."
-    self.client.connect(server=('talk.google.com', 5223))
+    a=self.client.connect(server=('talk.google.com', 5223))
+    if a==None or len(a)<2:
+      print "Connection failed!"
+      return False
     print "Connected!"
     print "Authenticating..."
     if self.client.auth(user, password, resource='CyberArchitect', ) is None:

@@ -19,7 +19,7 @@ def Glogin(mobno,user,password):
       users=gt[mobno].getOnlineUsers()
       response=""
       for item in users:
-	response+="G%s/%s\f\r" % (item, users[item])
+	response+="G%s/%s\n" % (item, users[item])
       db.pushOutboxMsg(mobno, response)
   else:
     db.pushOutboxMsg(mobno, "Please login... Reply with LOGIN password to login.")
