@@ -54,7 +54,10 @@ class Facebook(threading.Thread):
   def connect(self, user, password):
     self.client = xmpp.Client('chat.facebook.com')
     print "Connecting..."
-    self.client.connect(server=('chat.facebook.com', 5222))
+    a=self.client.connect(server=('chat.facebook.com', 5222))
+    if a==None or len(a)<2:
+      print "Connection failed!"
+      return False
     print "Connected!"
     print "Authenticating..."
     if self.client.auth(user, password, resource='CyberArchitect', ) is None:
