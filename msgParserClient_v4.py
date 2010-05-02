@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import inbox, e32, lightblue, threading, messaging, time, sys
+import inbox, e32, lightblue, threading, messaging, time, sys, appuifw
 from xml.dom import minidom, Node
 class SMS:
   def __init__(self, str, to=None, frm=None, txt=None, ts=None):
@@ -53,16 +53,15 @@ class SenderThread (threading.Thread):
 	  outbox.delete(m)
       self.rcvSkt.send("2")
     #if state ==messaging.EFatalServerError:
-    #  self.rcvSkt.send("Probably No Coverage, no simcard or service has beed suspended by your provider ")
+    #  self.rcvSkt.send("Probably No Coverage, no simcard or service has beed suspended by your provider, can't help dude :) ")
     #if state ==messaging.EDeleted:
     #  self.rcvSkt.send("NAK")
       
   def run ( self ):
     self.rcvSkt = lightblue.socket()
-    self.rcvSkt.connect(("11:11:11:11:11:11",1))
+    self.rcvSkt.connect((device[0],1))
     print "Inside Client Sender Thread :D"
     while 1:
-      self.no = "9428040920"
       print "Waiting for message from computer"
       self.response = self.rcvSkt.recv(1024)
       sms=SMS(self.response)
@@ -83,13 +82,15 @@ class ReceiverThread(threading.Thread):
   def run ( self ):
     print "Inside Client receiver Thread :D"
     self.sndSkt = lightblue.socket()
-    self.sndSkt.connect(("11:11:11:11:11:11",2))
+    self.sndSkt.connect((device[0],2))
     box=inbox.Inbox()
     box.bind(self.callback)
     app_lock = e32.Ao_lock()
     app_lock.wait()
     self.sndSkt.close()
-  
+
+device = lightblue.selectdevice()
+print device[0]
 ReceiverThread().start()
 SenderThread().start()
 print "Waiting for new SMS messages.."
