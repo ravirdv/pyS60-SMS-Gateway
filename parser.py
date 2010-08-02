@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+
+#test
+#test
 class SMSParser:
   @staticmethod
   def parseSMS(msg):
