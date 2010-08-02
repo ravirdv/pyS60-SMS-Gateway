@@ -24,7 +24,7 @@ class SenderThread (threading.Thread):
 	sms=SMS(str(row[0]), row[1],row[2], row[3], str(row[4]))
         toSend = sms.toXML()
 	print toSend
-        conn2.send(toSend)
+        conn2.send(toSend.replace("\n","\\n"))
         res = conn2.recv(1024)
         print res
         while (res != "1" and res != "2"):

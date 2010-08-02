@@ -2,10 +2,10 @@
 import inbox, e32, lightblue, threading, messaging, time, sys
 from xml.dom import minidom, Node
 class SMS:
-  def __init__(self, str, to=None, frm=None, txt=None, ts=None):
+  def __init__(self, string, to=None, frm=None, txt=None, ts=None):
     if to==None:
-      self.xml=str
-      doc = minidom.parseString(str)
+      self.xml=string
+      doc = minidom.parseString(string)
       node = doc.documentElement
       if node.nodeType == Node.ELEMENT_NODE:
 	for (name, value) in node.attributes.items():
@@ -20,7 +20,7 @@ class SMS:
 	  if name.lower()=="timestamp":
 	    self.timestamp=value
     else:
-      self.id=str
+      self.id=string
       self.to=to
       self.frm=frm
       self.text=txt
@@ -64,10 +64,10 @@ class SenderThread (threading.Thread):
     while 1:
       print "Waiting for message from computer"
       self.response = self.rcvSkt.recv(1024)
-      print self.response
       sms=SMS(self.response)
-      print sms.to + sms.text
-      messaging.sms_send(sms.to, sms.text, "7bit", self.cb)
+      a=str(sms.text)
+      a=a.replace("\\n", "\n")
+      messaging.sms_send(sms.to, a, "7bit", self.cb)
       
 
 class ReceiverThread(threading.Thread):
